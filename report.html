@@ -263,51 +263,51 @@
     }
 
     // Function to print the report
-    window.printReport = function() {
-      const printContents = document.getElementById('reportOutput').innerHTML;
-      const printWindow = window.open('', '', 'width=800,height=600');
-      printWindow.document.write(`  
-        <html>
-          <head>
-            <title>Report</title>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-              }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-              }
-              th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-              }
-              th {
-                background-color: #4CAF50;
-                color: white;
-              }
-            </style>
-          </head>
-          <body>${printContents}</body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    };
+    window.printReport = function () {
+  const printContents = document.getElementById('reportOutput').innerHTML;
+  const printWindow = window.open('', '', 'width=800,height=600');
+  printWindow.document.write(`  
+    <html>
+    <head>
+      <title>Report</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #4CAF50;
+          color: white;
+        }
+      </style>
+    </head>
+    <body>${printContents}</body>
+    </html>
+  `); // 👈 make sure this backtick is here!
+  printWindow.document.close();
+  printWindow.print();
+};
 
     // Event listeners for the report buttons
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('dailyReportBtn').addEventListener('click', function() {
-        generateReport('daily');
-      });
-      document.getElementById('weeklyReportBtn').addEventListener('click', function() {
-        generateReport('weekly');
-      });
-      document.getElementById('monthlyReportBtn').addEventListener('click', function() {
-        generateReport('monthly');
-      });
-    });
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('dailyReportBtn').addEventListener('click', function() {
+    generateReport('daily');
+  });
+  document.getElementById('weeklyReportBtn').addEventListener('click', function() {
+    generateReport('weekly');
+  });
+  document.getElementById('monthlyReportBtn').addEventListener('click', function() {
+    generateReport('monthly');
+  });
+}); // ✅ this was missing!
   </script>
 </body>
 </html>

@@ -1,7 +1,16 @@
 // Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, updatePassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -29,21 +38,29 @@ const orderHistoryTable = document.getElementById("orderHistoryTable");
 
 // Handle Registration
 if (registerForm) {
-  registerForm.addEventListener("submit", (e) => {
+  registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("registerPassword").value;
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        alert("User registered successfully!");
-        console.log(userCredential.user);
-        window.location.href = "index.html"; // Redirect to login
-      })
-      .catch((error) => {
-        console.error("Error:", error.message);
-        alert(error.message);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create Firestore user profile
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        role: user.email === adminEmail ? "admin" : "user",
+        createdAt: new Date().toISOString()
       });
+
+      alert("User registered successfully!");
+      window.location.href = "index.html"; // Redirect to login
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert(error.message);
+    }
   });
 }
 
