@@ -1,104 +1,127 @@
-/* Global Styles */
+/* Reset & Global Styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  /* Receipt Container */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f3f2ef;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Receipt Container */
+.receipt-container {
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.receipt-container h1 {
+  font-size: 22px;
+  color: #0a66c2;
+  margin-bottom: 10px;
+}
+.receipt-container p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 18px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+table th, table td {
+  text-align: left;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+table th {
+  background-color: #0a66c2;
+  color: #fff;
+  font-weight: 500;
+}
+table td {
+  background-color: #f9f9f9;
+}
+table th i {
+  margin-right: 6px;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+button {
+  flex: 1;
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button i {
+  margin-right: 8px;
+}
+button:hover {
+  background-color: #004182;
+}
+
+/* Print & Download Button Variation */
+.print-btn {
+  background-color: #0a66c2;
+}
+.download-btn {
+  background-color: #0077b5;
+}
+.print-btn:hover,
+.download-btn:hover {
+  background-color: #004182;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
   .receipt-container {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
+    padding: 16px;
   }
-  
-  .receipt-container h1 {
-    font-size: 24px;
-    color: #4CAF50;
-    margin-bottom: 20px;
+
+  h1 {
+    font-size: 18px;
   }
-  
-  .receipt-container p {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  /* Table Styles */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
+
   table th, table td {
-    text-align: left;
-    padding: 10px;
-    border: 1px solid #ddd;
+    font-size: 12px;
+    padding: 8px;
   }
-  
-  table th {
-    background-color: #4CAF50;
-    color: #fff;
-    font-weight: bold;
-  }
-  
-  table td {
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  /* Buttons */
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  
+
   button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 12px;
+    padding: 8px 12px;
   }
-  
-  button:hover {
-    background-color: #45a049;
+
+  .buttons {
+    flex-direction: column;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 480px) {
-    .receipt-container {
-      padding: 15px;
-    }
-  
-    table th, table td {
-      font-size: 12px;
-      padding: 8px;
-    }
-  
-    button {
-      font-size: 12px;
-      padding: 8px 15px;
-    }
-  }
-  
+}

@@ -14,7 +14,7 @@ body {
 
 h1, h2 {
   text-align: center;
-  color: #4CAF50;
+  color: #0a66c2;
   margin-bottom: 20px;
 }
 
@@ -26,7 +26,7 @@ h1, h2 {
   overflow-x: auto;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   padding: 10px;
 }
 
@@ -36,7 +36,7 @@ table {
 }
 
 thead {
-  background-color: #4CAF50;
+  background-color: #0a66c2;
   color: #fff;
 }
 
@@ -51,12 +51,12 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-  background-color: #f1f1f1;
+  background-color: #eef6fb;
 }
 
 th {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 td {
@@ -67,16 +67,17 @@ td {
 /* Buttons */
 button {
   padding: 10px 15px;
-  background-color: #4CAF50;
+  background-color: #0a66c2;
   color: white;
   font-size: 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #004182;
 }
 
 /* Generate Reports Form */
@@ -85,8 +86,8 @@ button:hover {
   margin: 30px auto;
   background-color: #fff;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
 }
 
 #generateUserReportForm label {
@@ -100,13 +101,14 @@ button:hover {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
 #generateUserReportForm input:focus,
 #generateUserReportForm select:focus {
-  border-color: #4CAF50;
+  border-color: #0a66c2;
   outline: none;
 }
 
@@ -116,13 +118,13 @@ button:hover {
   margin: 30px auto;
   padding: 20px;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
 }
 
 #reportContainer h3 {
   text-align: center;
-  color: #4CAF50;
+  color: #0a66c2;
   margin-bottom: 20px;
 }
 
@@ -138,8 +140,9 @@ button:hover {
 }
 
 #reportContainer th {
-  background-color: #4CAF50;
+  background-color: #0a66c2;
   color: #fff;
+  font-weight: 600;
 }
 
 #reportContainer td {
@@ -152,28 +155,29 @@ button:hover {
   display: inline-block;
   margin: 10px;
   padding: 12px 20px;
-  background-color: #4CAF50;
+  background-color: #0a66c2;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
 }
 
 #reportContainer button:hover {
-  background-color: #45a049;
+  background-color: #004182;
 }
 
 #reportContainer #printReportButton {
-  background-color: #008CBA;
+  background-color: #006097;
 }
 
 #reportContainer #printReportButton:hover {
-  background-color: #007bb5;
+  background-color: #004a7c;
 }
 
 /* Generate Reports & Logout Buttons */
-#generateReportButton, #logoutButton {
+#generateReportButton,
+#logoutButton {
   display: block;
   width: 200px;
   margin: 20px auto;
@@ -182,11 +186,11 @@ button:hover {
 }
 
 #logoutButton {
-  background-color: #ff4d4d;
+  background-color: #e60023;
 }
 
 #logoutButton:hover {
-  background-color: #e60000;
+  background-color: #b8001b;
 }
 
 /* Users Page Button */
@@ -196,16 +200,16 @@ button:hover {
   margin: 20px auto;
   padding: 12px;
   text-align: center;
-  background-color: #4CAF50;
+  background-color: #0a66c2;
   color: white;
   font-size: 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 #userPageButton:hover {
-  background-color: #45a049;
+  background-color: #004182;
 }
 
 /* Responsive Design */
@@ -233,7 +237,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-  h1 {
+  h1, h2 {
     font-size: 18px;
   }
 
