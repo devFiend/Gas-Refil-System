@@ -212,6 +212,25 @@ button:hover {
   background-color: #004182;
 }
 
+/* Payment Records Button */
+#paymentPageButton {
+  display: block;
+  width: 200px;
+  margin: 20px auto;
+  padding: 12px;
+  text-align: center;
+  background-color: #0a66c2;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#paymentPageButton:hover {
+  background-color: #004182;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   body {

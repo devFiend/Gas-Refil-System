@@ -200,7 +200,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     fetchOrders();
   } else {
-    alert("Unauthorized access!");
+    // alert("Unauthorized access!");
     window.location.href = "index.html";
   }
 });

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Records - Transaction History</title>
+  <script type="module" src="payment-record.js"></script>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Payment Records - Transaction History</h1>
+    <button id="backButton">Back to Admin Dashboard</button>
+    <button id="logoutButton">Logout</button>
+    <div class="table-container">
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>User ID</th>
+            <th>Total Price</th>
+            <th>Bank Details</th>
+            <th>Order Date</th>
+          </tr>
+        </thead>
+        <tbody id="paymentRecordsTable"></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
