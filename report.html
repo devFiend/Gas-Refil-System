@@ -46,11 +46,6 @@
       background-color: #004182;
     }
 
-    .report-container button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-
     /* Table Styles */
     table {
       width: 100%;
@@ -119,11 +114,6 @@
       background-color: #004182;
     }
 
-    .modal-content button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-
     .close {
       color: #aaa;
       float: right;
@@ -153,6 +143,7 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal()">×</span>
       <div id="reportOutput"></div>
+      <!-- <button onclick="printReport()">Print Report</button> -->
     </div>
   </div>
 
@@ -160,7 +151,6 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
     import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
     import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
-    import { jsPDF } from 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
     // Firebase configuration
     const firebaseConfig = {
@@ -196,24 +186,24 @@
       }
     });
 
-    // Helper function to get date range (UTC)
+    // Helper function to get date range
     function getDateRange(period) {
       const now = new Date();
       let startDate, endDate;
 
       if (period === 'daily') {
-        startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-        endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59));
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
       } else if (period === 'weekly') {
         const lastSunday = new Date(now);
-        lastSunday.setUTCDate(now.getUTCDate() - now.getUTCDay());
+        lastSunday.setDate(now.getDate() - now.getDay());
         const nextSunday = new Date(lastSunday);
-        nextSunday.setUTCDate(lastSunday.getUTCDate() + 7);
-        startDate = new Date(Date.UTC(lastSunday.getUTCFullYear(), lastSunday.getUTCMonth(), lastSunday.getUTCDate()));
-        endDate = new Date(Date.UTC(nextSunday.getUTCFullYear(), nextSunday.getUTCMonth(), nextSunday.getUTCDate(), 23, 59, 59));
+        nextSunday.setDate(lastSunday.getDate() + 7);
+        startDate = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate());
+        endDate = new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 23, 59, 59);
       } else if (period === 'monthly') {
-        startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-        endDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59));
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
       }
 
       console.log(`Date range for ${period}: ${startDate.toISOString()} to ${endDate.toISOString()}`);
@@ -228,9 +218,6 @@
         window.location.href = "index.html";
         return;
       }
-
-      const buttons = [document.getElementById('dailyReportBtn'), document.getElementById('weeklyReportBtn'), document.getElementById('monthlyReportBtn')];
-      buttons.forEach(btn => btn.disabled = true);
 
       const { start, end } = getDateRange(period);
       const ordersRef = collection(db, 'orders');
@@ -263,8 +250,6 @@
       } catch (error) {
         console.error('Error generating report:', error);
         alert('Failed to generate report: ' + error.message);
-      } finally {
-        buttons.forEach(btn => btn.disabled = false);
       }
     }
 
@@ -313,31 +298,14 @@
           </table>
           <button id="downloadReportButton">Download CSV</button>
           <button id="printReportButton">Print Report</button>
-          <button id="downloadPdfButton">Download PDF</button>
         `;
         document.getElementById('downloadReportButton').addEventListener('click', () => {
           console.log(`Downloading ${period} report as CSV`);
-          const downloadButton = document.getElementById('downloadReportButton');
-          downloadButton.disabled = true;
-          generateCSV(orders, period).finally(() => {
-            downloadButton.disabled = false;
-          });
+          generateCSV(orders, period);
         });
         document.getElementById('printReportButton').addEventListener('click', () => {
           console.log(`Printing ${period} report`);
-          const printButton = document.getElementById('printReportButton');
-          printButton.disabled = true;
-          printReport().finally(() => {
-            printButton.disabled = false;
-          });
-        });
-        document.getElementById('downloadPdfButton').addEventListener('click', () => {
-          console.log(`Downloading ${period} report as PDF`);
-          const pdfButton = document.getElementById('downloadPdfButton');
-          pdfButton.disabled = true;
-          generatePDF(orders, period).finally(() => {
-            pdfButton.disabled = false;
-          });
+          printReport();
         });
       }
       modal.style.display = "block";
@@ -364,73 +332,42 @@
         )
       ].join("\n");
 
-      return new Promise((resolve, reject) => {
+      try {
+        // Try data URI for WebView compatibility
+        const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
+        const link = document.createElement("a");
+        link.setAttribute("href", dataUri);
+        link.setAttribute("download", `${period}_report.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        console.log("CSV download initiated via data URI");
+      } catch (error) {
+        console.error("Error generating CSV via data URI:", error);
         try {
-          // Try data URI for WebView compatibility
-          const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
-          const link = document.createElement("a");
-          link.setAttribute("href", dataUri);
-          link.setAttribute("download", `${period}_report.csv`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          console.log("CSV download initiated via data URI");
-          resolve();
-        } catch (error) {
-          console.error("Error generating CSV via data URI:", error);
-          try {
-            // Fallback to Blob API
-            console.log("Falling back to Blob API for CSV download");
-            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            const filename = `${period}_report.csv`;
-            if (navigator.msSaveBlob) {
-              navigator.msSaveBlob(blob, filename);
-              console.log("CSV download initiated via msSaveBlob");
-              resolve();
-            } else {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement("a");
-              link.setAttribute("href", url);
-              link.setAttribute("download", filename);
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-              console.log("CSV download initiated via Blob API");
-              resolve();
-            }
-          } catch (blobError) {
-            console.error("Error generating CSV via Blob API:", blobError);
-            alert("Failed to download CSV. Please try again or contact support.");
-            reject(blobError);
+          // Fallback to Blob API
+          console.log("Falling back to Blob API for CSV download");
+          const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+          const filename = `${period}_report.csv`;
+          if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, filename);
+            console.log("CSV download initiated via msSaveBlob");
+          } else {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            console.log("CSV download initiated via Blob API");
           }
+        } catch (blobError) {
+          console.error("Error generating CSV via Blob API:", blobError);
+          alert("Failed to download CSV. Please try again or contact support.");
         }
-      });
-    }
-
-    // Generate PDF for Download
-    function generatePDF(orders, period) {
-      return new Promise((resolve) => {
-        console.log(`Generating PDF for ${period} report`);
-        const doc = new jsPDF();
-        doc.text(`${period.charAt(0).toUpperCase() + period.slice(1)} Report`, 10, 10);
-        doc.autoTable({
-          head: [['Order ID', 'Gas Type', 'Quantity', 'Order Date', 'Delivery Address']],
-          body: orders.map(order => [
-            order.id.slice(0, 4) + '...',
-            order.gasType || 'N/A',
-            order.quantity || 'N/A',
-            order.orderDate.toLocaleString(),
-            order.deliveryAddress || 'N/A'
-          ]),
-          styles: { font: 'Helvetica', fontSize: 10 },
-          headStyles: { fillColor: [10, 102, 194], textColor: [255, 255, 255] },
-          alternateRowStyles: { fillColor: [253, 253, 253] }
-        });
-        doc.save(`${period}_report.pdf`);
-        console.log("PDF download initiated");
-        resolve();
-      });
+      }
     }
 
     // Function to close the modal
@@ -442,66 +379,56 @@
 
     // Function to print the report
     window.printReport = function() {
-      return new Promise((resolve, reject) => {
-        console.log("Printing report");
-        try {
-          if (window.android && window.android.printReport) {
-            console.log("Using native Android print");
-            window.android.printReport(document.getElementById('reportOutput').innerHTML);
-            resolve();
-            return;
-          }
-          const printContents = document.getElementById('reportOutput').innerHTML;
-          const printWindow = window.open('', '', 'width=800,height=600');
-          if (!printWindow) {
-            throw new Error("Failed to open print window");
-          }
-          printWindow.document.write(`
-            <html>
-            <head>
-              <title>Print Report</title>
-              <style>
-                body {
-                  font-family: 'Poppins', sans-serif;
-                  color: #333;
-                }
-                h3 {
-                  color: #0a66c2;
-                  text-align: center;
-                }
-                table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 20px;
-                }
-                th, td {
-                  border: 1px solid #ddd;
-                  padding: 10px;
-                  text-align: left;
-                }
-                th {
-                  background-color: #0a66c2;
-                  color: white;
-                  font-weight: 600;
-                }
-                td {
-                  background-color: #fdfdfd;
-                }
-              </style>
-            </head>
-            <body>${printContents}</body>
-            </html>
-          `);
-          printWindow.document.close();
-          printWindow.print();
-          printWindow.close();
-          resolve();
-        } catch (error) {
-          console.error("Error printing report:", error);
-          alert("Failed to print report. Try downloading the report as a PDF instead.");
-          reject(error);
+      console.log("Printing report");
+      try {
+        const printContents = document.getElementById('reportOutput').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        if (!printWindow) {
+          throw new Error("Failed to open print window");
         }
-      });
+        printWindow.document.write(`
+          <html>
+          <head>
+            <title>Print Report</title>
+            <style>
+              body {
+                font-family: 'Poppins', sans-serif;
+                color: #333;
+              }
+              h3 {
+                color: #0a66c2;
+                text-align: center;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+              }
+              th, td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+              }
+              th {
+                background-color: #0a66c2;
+                color: white;
+                font-weight: 600;
+              }
+              td {
+                background-color: #fdfdfd;
+              }
+            </style>
+          </head>
+          <body>${printContents}</body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+      } catch (error) {
+        console.error("Error printing report:", error);
+        alert("Failed to print report. Consider downloading the report as a CSV.");
+      }
     };
 
     // Event listeners for the report buttons
@@ -528,5 +455,6 @@
       });
     });
 </script>
+
 </body>
 </html>
