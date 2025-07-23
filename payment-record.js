@@ -103,19 +103,27 @@ const generateCSV = (records) => {
   ].join("\n");
 
   try {
-    // Check for Median WebView environment
-    if (window.Median) {
-      console.log("Detected Median WebView, using Median file download");
-      window.Median.downloadFile("payment_records.csv", btoa(csvContent), "text/csv");
-    } else {
-      console.log("Using browser Blob API for CSV download");
+    // Try data URI for WebView compatibility
+    const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
+    const link = document.createElement("a");
+    link.setAttribute("href", dataUri);
+    link.setAttribute("download", "payment_records.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log("CSV download initiated via data URI");
+  } catch (error) {
+    console.error("Error generating CSV via data URI:", error);
+    try {
+      // Fallback to Blob API for browsers
+      console.log("Falling back to Blob API for CSV download");
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const filename = "payment_records.csv";
       if (navigator.msSaveBlob) {
         navigator.msSaveBlob(blob, filename);
       } else {
-        const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
         link.setAttribute("href", url);
         link.setAttribute("download", filename);
         document.body.appendChild(link);
@@ -123,11 +131,11 @@ const generateCSV = (records) => {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       }
+      console.log("CSV download initiated via Blob API");
+    } catch (blobError) {
+      console.error("Error generating CSV via Blob API:", blobError);
+      alert("Failed to download CSV: " + blobError.message);
     }
-    console.log("CSV download initiated");
-  } catch (error) {
-    console.error("Error generating CSV:", error);
-    alert("Failed to download CSV: " + error.message);
   }
 };
 
