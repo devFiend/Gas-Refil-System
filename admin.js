@@ -189,67 +189,111 @@ const generateUserReport = async (userId, status) => {
 // Generate CSV for Download
 const generateCSV = (reportData) => {
   console.log("Generating CSV for report");
-
+  const escapeCsvField = (field) => `"${String(field || '').replace(/"/g, '""')}"`;
+  const sanitizeCsvField = (field) => {
+    const str = escapeCsvField(field);
+    return /^[=+@-]/.test(str) ? `'${str}` : str;
+  };
   const csvContent = [
     "OrderID,GasType,Quantity,DeliveryAddress,Status,OrderDate",
     ...reportData.map((row) =>
-      `"${row.OrderID}","${row.GasType || 'N/A'}","${row.Quantity || 'N/A'}","${row.DeliveryAddress || 'N/A'}","${row.Status || 'N/A'}","${row.OrderDate}"`
-    )
+      [
+        sanitizeCsvField(row.OrderID),
+        sanitizeCsvField(row.GasType),
+        sanitizeCsvField(row.Quantity),
+        sanitizeCsvField(row.DeliveryAddress),
+        sanitizeCsvField(row.Status),
+        sanitizeCsvField(row.OrderDate),
+      ].join(",")
+    ),
   ].join("\n");
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-
-  a.style.display = "none";
-  a.href = url;
-  a.setAttribute("download", "user_order_report.csv");
-
-  // Append to DOM and trigger click
-  document.body.appendChild(a);
-  a.click();
-
-  // Cleanup
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(url);
-
-  console.log("CSV triggered for download");
+  try {
+    // Try data URI for WebView compatibility
+    const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
+    const link = document.createElement("a");
+    link.setAttribute("href", dataUri);
+    link.setAttribute("download", "user_order_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log("CSV download initiated via data URI");
+  } catch (error) {
+    console.error("Error generating CSV via data URI:", error);
+    try {
+      // Fallback to Blob API
+      console.log("Falling back to Blob API for CSV download");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const filename = "user_order_report.csv";
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+        console.log("CSV download initiated via msSaveBlob");
+      } else {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        console.log("CSV download initiated via Blob API");
+      }
+    } catch (blobError) {
+      console.error("Error generating CSV via Blob API:", blobError);
+      alert("Failed to download CSV. Please try again or contact support.");
+    }
+  }
 };
 
 // Print Report
 const printReport = (reportHtml) => {
-  const printFrame = document.createElement("iframe");
-  printFrame.style.display = "none";
-  document.body.appendChild(printFrame);
+  try {
+    const printFrame = document.createElement("iframe");
+    printFrame.style.display = "none";
+    document.body.appendChild(printFrame);
 
-  const frameDoc = printFrame.contentWindow || printFrame.contentDocument;
-  frameDoc.document.open();
-  frameDoc.document.write(`
-    <html>
-      <head><title>Print Report</title></head>
-      <body>
-        ${reportHtml}
-        <script>
-          window.onload = function () {
-            window.focus();
-            window.print();
-            window.onafterprint = function () {
-              parent.document.body.removeChild(parent.document.querySelector("iframe"));
+    const frameDoc = printFrame.contentWindow || printFrame.contentDocument;
+    frameDoc.document.open();
+    frameDoc.document.write(`
+      <html>
+        <head><title>Print Report</title></head>
+        <body>
+          ${reportHtml}
+          <script>
+            window.onload = function () {
+              try {
+                window.focus();
+                window.print();
+                window.onafterprint = function () {
+                  parent.document.body.removeChild(parent.document.querySelector("iframe"));
+                };
+              } catch (e) {
+                console.error("Print error:", e);
+                parent.document.body.removeChild(parent.document.querySelector("iframe"));
+              }
             };
-          };
-        </script>
-      </body>
-    </html>
-  `);
-  frameDoc.document.close();
+          </script>
+        </body>
+      </html>
+    `);
+    frameDoc.document.close();
+  } catch (error) {
+    console.error("Error printing report:", error);
+    alert("Failed to print report. Consider downloading the report as a CSV.");
+  }
 };
 
 // Handle Form Submission
 if (generateUserReportForm) {
   generateUserReportForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const userId = userIdInput.value;
+    const userId = userIdInput.value.trim();
     const status = orderStatusSelect.value;
+    if (!userId) {
+      alert("Please enter a valid User ID.");
+      return;
+    }
     console.log("Form submitted for user:", userId, "status:", status);
     generateUserReport(userId, status);
   });
