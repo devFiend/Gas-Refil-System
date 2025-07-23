@@ -5,107 +5,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Report</title>
   <style>
-  /* Global Styles */
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
-  margin: 0;
-  padding: 20px;
-}
+    /* Global Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
 
-.report-container {
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
-  max-width: 800px;
-}
+    .report-container {
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+      max-width: 800px;
+    }
 
-.report-container h2 {
-  color: #0a66c2;
-  margin-bottom: 15px;
-  text-align: center;
-}
+    .report-container h2 {
+      color: #0a66c2;
+      margin-bottom: 15px;
+      text-align: center;
+    }
 
-/* Buttons */
-.report-container button {
-  margin: 5px;
-  padding: 10px 20px;
-  background-color: #0a66c2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    /* Buttons */
+    .report-container button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #0a66c2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-.report-container button:hover {
-  background-color: #004182;
-}
+    .report-container button:hover {
+      background-color: #004182;
+    }
 
-/* Table Styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
+    /* Table Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px 12px;
-  text-align: left;
-}
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      text-align: left;
+    }
 
-table th {
-  background-color: #0a66c2;
-  color: #ffffff;
-  font-weight: 600;
-}
+    table th {
+      background-color: #0a66c2;
+      color: #ffffff;
+      font-weight: 600;
+    }
 
-table td {
-  background-color: #fdfdfd;
-  color: #333;
-}
+    table td {
+      background-color: #fdfdfd;
+      color: #333;
+    }
 
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-}
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
 
-.modal-content {
-  background-color: #ffffff;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 900px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-}
+    .modal-content {
+      background-color: #ffffff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 900px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 26px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .modal-content h3 {
+      color: #0a66c2;
+      margin-bottom: 15px;
+      text-align: center;
+    }
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-}
-</style>
+    .modal-content button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #0a66c2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .modal-content button:hover {
+      background-color: #004182;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
   <div class="report-container">
@@ -119,103 +141,115 @@ table td {
   <div id="reportModal" class="modal">
     <!-- Modal Content -->
     <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
+      <span class="close" onclick="closeModal()">×</span>
       <div id="reportOutput"></div>
       <button onclick="printReport()">Print Report</button>
     </div>
   </div>
 
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-    import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
+    import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
 
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCX0vxlyd0hXXDur4v3SpAnNuRwrm4Fyyc",
       authDomain: "gas-refill-app.firebaseapp.com",
       projectId: "gas-refill-app",
-      storageBucket: "gas-refill-app.appspot.com",
+      storageBucket: "gas-refill-app.firebasestorage.app",
       messagingSenderId: "369760533545",
       appId: "1:369760533545:web:5bc99b940b30154fe3b038",
       measurementId: "G-8GV51M539Z"
     };
 
     // Initialize Firebase
+    console.log("Initializing Firebase for report page...");
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+    console.log("Firebase initialized successfully");
 
     let currentUser = null;
 
     // Listen for authentication state changes
     onAuthStateChanged(auth, (user) => {
+      console.log("Auth state changed:", user ? `User ${user.uid} logged in` : "No user logged in");
       if (user) {
         currentUser = user;
-        console.log('User logged in:', currentUser.email);
+        console.log('User logged in:', currentUser.email, 'UID:', currentUser.uid);
       } else {
         currentUser = null;
-        console.log('No user logged in');
+        console.log('No user logged in, redirecting to index.html');
+        alert("Unauthorized access!");
+        window.location.href = "index.html";
       }
     });
 
     // Helper function to get date range
     function getDateRange(period) {
       const now = new Date();
-      let startDate;
-      let endDate;
+      let startDate, endDate;
 
       if (period === 'daily') {
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Today
-        endDate = now; // Today as the end
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
       } else if (period === 'weekly') {
         const lastSunday = new Date(now);
-        lastSunday.setDate(now.getDate() - now.getDay()); // Get previous Sunday
+        lastSunday.setDate(now.getDate() - now.getDay());
         const nextSunday = new Date(lastSunday);
-        nextSunday.setDate(lastSunday.getDate() + 7); // Add 7 days to get next Sunday
-        startDate = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate()); // Normalize the date to midnight
-        endDate = new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 23, 59, 59); // Next Sunday at 11:59:59 PM
+        nextSunday.setDate(lastSunday.getDate() + 7);
+        startDate = new Date(lastSunday.getFullYear(), lastSunday.getMonth(), lastSunday.getDate());
+        endDate = new Date(nextSunday.getFullYear(), nextSunday.getMonth(), nextSunday.getDate(), 23, 59, 59);
       } else if (period === 'monthly') {
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the current month
-        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59); // Last day of the current month
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
       }
 
-      return {
-        start: startDate, // Start date as a JavaScript Date object
-        end: endDate,     // End date as a JavaScript Date object
-      };
+      console.log(`Date range for ${period}: ${startDate.toISOString()} to ${endDate.toISOString()}`);
+      return { start: startDate, end: endDate };
     }
 
     // Function to generate report
     async function generateReport(period) {
       if (!currentUser) {
+        console.log("No user logged in, cannot generate report");
         alert("Please log in first.");
-        window.location.href = "index.html"; // Redirect to login page if user is not authenticated
+        window.location.href = "index.html";
         return;
       }
 
       const { start, end } = getDateRange(period);
-      console.log(`Querying from ${start} to ${end}`); // Log the date range for debugging
-
       const ordersRef = collection(db, 'orders');
       const q = query(ordersRef, where("userId", "==", currentUser.uid));
 
       try {
         const querySnapshot = await getDocs(q);
+        console.log("Query returned", querySnapshot.size, "orders for user:", currentUser.uid);
         const orders = [];
         querySnapshot.forEach((doc) => {
           const orderData = doc.data();
-          const orderDate = new Date(orderData.orderDate);  // Convert ISO date string to JS Date
+          console.log("Processing order:", doc.id, orderData);
+          let orderDate;
+          if (orderData.orderDate && typeof orderData.orderDate.toDate === 'function') {
+            console.log("orderDate is a Timestamp for order:", doc.id);
+            orderDate = orderData.orderDate.toDate();
+          } else if (orderData.orderDate && typeof orderData.orderDate === 'string') {
+            console.log("orderDate is a string for order:", doc.id, orderData.orderDate);
+            orderDate = new Date(orderData.orderDate);
+          } else {
+            console.log("orderDate is invalid or missing for order:", doc.id);
+            orderDate = new Date();
+          }
           if (orderDate >= start && orderDate <= end) {
-            orders.push({ id: doc.id, ...orderData });
+            orders.push({ id: doc.id, ...orderData, orderDate });
           }
         });
-
-        // Display report
+        console.log(`Filtered ${orders.length} orders within ${period} range`);
         displayReport(orders, period);
       } catch (error) {
         console.error('Error generating report:', error);
-        alert('Failed to generate report. Please try again.');
+        alert('Failed to generate report: ' + error.message);
       }
     }
 
@@ -225,8 +259,10 @@ table td {
       const modal = document.getElementById('reportModal');
       
       if (orders.length === 0) {
-        reportOutput.innerHTML = `<p>No orders found for this ${period}.</p>`;
+        console.log(`No orders found for ${period} report`);
+        reportOutput.innerHTML = `<p>No orders found for this ${period} period.</p>`;
       } else {
+        console.log(`Displaying ${orders.length} orders for ${period} report`);
         reportOutput.innerHTML = ` 
           <h3>${period.charAt(0).toUpperCase() + period.slice(1)} Report</h3>
           <table>
@@ -244,74 +280,122 @@ table td {
                 .map(
                   (order) => ` 
                 <tr>
-                  <td>${order.id}</td>
-                  <td>${order.gasType}</td>
-                  <td>${order.quantity}</td>
-                  <td>${new Date(order.orderDate).toLocaleString()}</td>
-                  <td>${order.deliveryAddress}</td>
+                  <td>${order.id.slice(0, 4)}...</td>
+                  <td>${order.gasType || 'N/A'}</td>
+                  <td>${order.quantity || 'N/A'}</td>
+                  <td>${order.orderDate.toLocaleString()}</td>
+                  <td>${order.deliveryAddress || 'N/A'}</td>
                 </tr>`
                 )
                 .join('')}
             </tbody>
           </table>
+          <button id="downloadReportButton">Download CSV</button>
         `;
+        document.getElementById('downloadReportButton').addEventListener('click', () => {
+          console.log(`Downloading ${period} report as CSV`);
+          generateCSV(orders, period);
+        });
       }
-
       modal.style.display = "block";
+    }
+
+    // Generate CSV for Download
+    function generateCSV(orders, period) {
+      console.log(`Generating CSV for ${period} report`);
+      const csvContent = [
+        "OrderID,GasType,Quantity,OrderDate,DeliveryAddress",
+        ...orders.map((order) =>
+          `"${order.id}","${order.gasType || 'N/A'}","${order.quantity || 'N/A'}","${order.orderDate.toLocaleString()}","${order.deliveryAddress || 'N/A'}"`
+        )
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const filename = `${period}_report.csv`;
+
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      console.log("CSV downloaded");
     }
 
     // Function to close the modal
     window.closeModal = function() {
+      console.log("Closing report modal");
       const modal = document.getElementById('reportModal');
       modal.style.display = "none";
     }
 
     // Function to print the report
-    window.printReport = function () {
-  const printContents = document.getElementById('reportOutput').innerHTML;
-  const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`  
-    <html>
-    <head>
-      <title>Report</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          text-align: left;
-        }
-        th {
-          background-color: #4CAF50;
-          color: white;
-        }
-      </style>
-    </head>
-    <body>${printContents}</body>
-    </html>
-  `); // 👈 make sure this backtick is here!
-  printWindow.document.close();
-  printWindow.print();
-};
+    window.printReport = function() {
+      console.log("Printing report");
+      const printContents = document.getElementById('reportOutput').innerHTML;
+      const printWindow = window.open('', '', 'width=800,height=600');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Print Report</title>
+          <style>
+            body {
+              font-family: 'Poppins', sans-serif;
+              color: #333;
+            }
+            h3 {
+              color: #0a66c2;
+              text-align: center;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 10px;
+              text-align: left;
+            }
+            th {
+              background-color: #0a66c2;
+              color: white;
+              font-weight: 600;
+            }
+            td {
+              background-color: #fdfdfd;
+            }
+          </style>
+        </head>
+        <body>${printContents}</body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    };
 
     // Event listeners for the report buttons
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('dailyReportBtn').addEventListener('click', function() {
-    generateReport('daily');
-  });
-  document.getElementById('weeklyReportBtn').addEventListener('click', function() {
-    generateReport('weekly');
-  });
-  document.getElementById('monthlyReportBtn').addEventListener('click', function() {
-    generateReport('monthly');
-  });
-}); // ✅ this was missing!
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('dailyReportBtn').addEventListener('click', () => {
+        console.log("Daily report button clicked");
+        generateReport('daily');
+      });
+      document.getElementById('weeklyReportBtn').addEventListener('click', () => {
+        console.log("Weekly report button clicked");
+        generateReport('weekly');
+      });
+      document.getElementById('monthlyReportBtn').addEventListener('click', () => {
+        console.log("Monthly report button clicked");
+        generateReport('monthly');
+      });
+    });
   </script>
 </body>
 </html>

@@ -24,6 +24,7 @@ console.log("Firebase initialized successfully");
 const backButton = document.getElementById('backButton') || console.error("Back button not found");
 const logoutButton = document.getElementById('logoutButton') || console.error("Logout button not found");
 const paymentRecordsTable = document.querySelector("#paymentRecordsTable") || console.error("Payment records table not found");
+const downloadCsvButton = document.getElementById('downloadCsvButton') || console.error("Download CSV button not found");
 
 // Fetch payment records
 async function fetchPaymentRecords() {
@@ -91,12 +92,48 @@ function renderPaymentRecords(records) {
   }
 }
 
+// Generate CSV for Download
+const generateCSV = (records) => {
+  console.log("Generating CSV for payment records");
+  const csvContent = [
+    "OrderID,UserID,TotalPrice,BankDetails,OrderDate",
+    ...records.map((row) =>
+      `"${row.id}","${row.userId || 'N/A'}","${row.totalPrice || '0.00'}","${row.bankDetails || 'N/A'}","${row.orderDate}"`
+    )
+  ].join("\n");
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const filename = "payment_records.csv";
+
+  if (navigator.msSaveBlob) { // For APK compatibility (e.g., older browsers or WebView)
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  console.log("CSV downloaded");
+};
+
 // Authenticate user
 onAuthStateChanged(auth, (user) => {
   console.log("Auth state changed:", user ? `User ${user.uid} logged in` : "No user logged in");
   if (user) {
     console.log("User authenticated, fetching payment records");
-    fetchPaymentRecords().then(renderPaymentRecords);
+    fetchPaymentRecords().then((records) => {
+      renderPaymentRecords(records);
+      if (downloadCsvButton) {
+        downloadCsvButton.addEventListener('click', () => {
+          console.log("Download CSV button clicked");
+          generateCSV(records);
+        });
+      }
+    });
   } else {
     console.log("No user logged in, redirecting to index.html");
     alert("Unauthorized access!");
