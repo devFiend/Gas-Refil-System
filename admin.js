@@ -189,6 +189,7 @@ const generateUserReport = async (userId, status) => {
 // Generate CSV for Download
 const generateCSV = (reportData) => {
   console.log("Generating CSV for report");
+
   const csvContent = [
     "OrderID,GasType,Quantity,DeliveryAddress,Status,OrderDate",
     ...reportData.map((row) =>
@@ -197,43 +198,50 @@ const generateCSV = (reportData) => {
   ].join("\n");
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const filename = "user_order_report.csv";
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
 
-  if (navigator.msSaveBlob) { // For APK compatibility (e.g., older browsers or WebView)
-    navigator.msSaveBlob(blob, filename);
-  } else {
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }
-  console.log("CSV downloaded");
+  a.style.display = "none";
+  a.href = url;
+  a.setAttribute("download", "user_order_report.csv");
+
+  // Append to DOM and trigger click
+  document.body.appendChild(a);
+  a.click();
+
+  // Cleanup
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+
+  console.log("CSV triggered for download");
 };
 
 // Print Report
 const printReport = (reportHtml) => {
-  console.log("Opening print window for report");
-  const printWindow = window.open('', '', 'width=800,height=600');
-  printWindow.document.write(`
+  const printFrame = document.createElement("iframe");
+  printFrame.style.display = "none";
+  document.body.appendChild(printFrame);
+
+  const frameDoc = printFrame.contentWindow || printFrame.contentDocument;
+  frameDoc.document.open();
+  frameDoc.document.write(`
     <html>
       <head><title>Print Report</title></head>
       <body>
         ${reportHtml}
         <script>
           window.onload = function () {
+            window.focus();
             window.print();
             window.onafterprint = function () {
-              window.close();
+              parent.document.body.removeChild(parent.document.querySelector("iframe"));
             };
           };
         </script>
       </body>
     </html>
   `);
+  frameDoc.document.close();
 };
 
 // Handle Form Submission
