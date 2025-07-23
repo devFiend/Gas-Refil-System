@@ -258,6 +258,12 @@
       const reportOutput = document.getElementById('reportOutput');
       const modal = document.getElementById('reportModal');
       
+      if (!reportOutput || !modal) {
+        console.error("Report output or modal not found");
+        alert("Required UI elements are missing. Please check the page structure.");
+        return;
+      }
+
       if (orders.length === 0) {
         console.log(`No orders found for ${period} report`);
         reportOutput.innerHTML = `<p>No orders found for this ${period} period.</p>`;
@@ -291,10 +297,15 @@
             </tbody>
           </table>
           <button id="downloadReportButton">Download CSV</button>
+          <button id="printReportButton">Print Report</button>
         `;
         document.getElementById('downloadReportButton').addEventListener('click', () => {
           console.log(`Downloading ${period} report as CSV`);
           generateCSV(orders, period);
+        });
+        document.getElementById('printReportButton').addEventListener('click', () => {
+          console.log(`Printing ${period} report`);
+          printReport();
         });
       }
       modal.style.display = "block";
@@ -303,29 +314,60 @@
     // Generate CSV for Download
     function generateCSV(orders, period) {
       console.log(`Generating CSV for ${period} report`);
+      const escapeCsvField = (field) => `"${String(field || '').replace(/"/g, '""')}"`;
+      const sanitizeCsvField = (field) => {
+        const str = escapeCsvField(field);
+        return /^[=+@-]/.test(str) ? `'${str}` : str;
+      };
       const csvContent = [
         "OrderID,GasType,Quantity,OrderDate,DeliveryAddress",
         ...orders.map((order) =>
-          `"${order.id}","${order.gasType || 'N/A'}","${order.quantity || 'N/A'}","${order.orderDate.toLocaleString()}","${order.deliveryAddress || 'N/A'}"`
+          [
+            sanitizeCsvField(order.id),
+            sanitizeCsvField(order.gasType),
+            sanitizeCsvField(order.quantity),
+            sanitizeCsvField(order.orderDate.toLocaleString()),
+            sanitizeCsvField(order.deliveryAddress),
+          ].join(",")
         )
       ].join("\n");
 
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const filename = `${period}_report.csv`;
-
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(blob, filename);
-      } else {
+      try {
+        // Try data URI for WebView compatibility
+        const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
         const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
+        link.setAttribute("href", dataUri);
+        link.setAttribute("download", `${period}_report.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        console.log("CSV download initiated via data URI");
+      } catch (error) {
+        console.error("Error generating CSV via data URI:", error);
+        try {
+          // Fallback to Blob API
+          console.log("Falling back to Blob API for CSV download");
+          const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+          const filename = `${period}_report.csv`;
+          if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, filename);
+            console.log("CSV download initiated via msSaveBlob");
+          } else {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            console.log("CSV download initiated via Blob API");
+          }
+        } catch (blobError) {
+          console.error("Error generating CSV via Blob API:", blobError);
+          alert("Failed to download CSV. Please try again or contact support.");
+        }
       }
-      console.log("CSV downloaded");
     }
 
     // Function to close the modal
@@ -338,64 +380,81 @@
     // Function to print the report
     window.printReport = function() {
       console.log("Printing report");
-      const printContents = document.getElementById('reportOutput').innerHTML;
-      const printWindow = window.open('', '', 'width=800,height=600');
-      printWindow.document.write(`
-        <html>
-        <head>
-          <title>Print Report</title>
-          <style>
-            body {
-              font-family: 'Poppins', sans-serif;
-              color: #333;
-            }
-            h3 {
-              color: #0a66c2;
-              text-align: center;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 20px;
-            }
-            th, td {
-              border: 1px solid #ddd;
-              padding: 10px;
-              text-align: left;
-            }
-            th {
-              background-color: #0a66c2;
-              color: white;
-              font-weight: 600;
-            }
-            td {
-              background-color: #fdfdfd;
-            }
-          </style>
-        </head>
-        <body>${printContents}</body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-      printWindow.close();
+      try {
+        const printContents = document.getElementById('reportOutput').innerHTML;
+        const printWindow = window.open('', '', 'width=800,height=600');
+        if (!printWindow) {
+          throw new Error("Failed to open print window");
+        }
+        printWindow.document.write(`
+          <html>
+          <head>
+            <title>Print Report</title>
+            <style>
+              body {
+                font-family: 'Poppins', sans-serif;
+                color: #333;
+              }
+              h3 {
+                color: #0a66c2;
+                text-align: center;
+              }
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+              }
+              th, td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+              }
+              th {
+                background-color: #0a66c2;
+                color: white;
+                font-weight: 600;
+              }
+              td {
+                background-color: #fdfdfd;
+              }
+            </style>
+          </head>
+          <body>${printContents}</body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+      } catch (error) {
+        console.error("Error printing report:", error);
+        alert("Failed to print report. Consider downloading the report as a CSV.");
+      }
     };
 
     // Event listeners for the report buttons
     document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('dailyReportBtn').addEventListener('click', () => {
+      const dailyBtn = document.getElementById('dailyReportBtn');
+      const weeklyBtn = document.getElementById('weeklyReportBtn');
+      const monthlyBtn = document.getElementById('monthlyReportBtn');
+      if (!dailyBtn || !weeklyBtn || !monthlyBtn) {
+        console.error("Report buttons not found");
+        alert("Required UI elements are missing. Please check the page structure.");
+        return;
+      }
+      dailyBtn.addEventListener('click', () => {
         console.log("Daily report button clicked");
         generateReport('daily');
       });
-      document.getElementById('weeklyReportBtn').addEventListener('click', () => {
+      weeklyBtn.addEventListener('click', () => {
         console.log("Weekly report button clicked");
         generateReport('weekly');
       });
-      document.getElementById('monthlyReportBtn').addEventListener('click', () => {
+      monthlyBtn.addEventListener('click', () => {
         console.log("Monthly report button clicked");
         generateReport('monthly');
       });
     });
-  </script>
+</script>
+
 </body>
 </html>
