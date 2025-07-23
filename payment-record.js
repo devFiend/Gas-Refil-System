@@ -102,22 +102,33 @@ const generateCSV = (records) => {
     )
   ].join("\n");
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const filename = "payment_records.csv";
-
-  if (navigator.msSaveBlob) { // For APK compatibility (e.g., older browsers or WebView)
-    navigator.msSaveBlob(blob, filename);
-  } else {
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  try {
+    // Check for Median WebView environment
+    if (window.Median) {
+      console.log("Detected Median WebView, using Median file download");
+      window.Median.downloadFile("payment_records.csv", btoa(csvContent), "text/csv");
+    } else {
+      console.log("Using browser Blob API for CSV download");
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const filename = "payment_records.csv";
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+    console.log("CSV download initiated");
+  } catch (error) {
+    console.error("Error generating CSV:", error);
+    alert("Failed to download CSV: " + error.message);
   }
-  console.log("CSV downloaded");
 };
 
 // Authenticate user
