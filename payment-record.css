@@ -1,0 +1,195 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #0a66c2;
+  margin-bottom: 20px;
+}
+
+/* Container */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Table Container */
+.table-container {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 1000px;
+  overflow-x: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #0a66c2;
+  color: #fff;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #eef6fb;
+}
+
+th {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+td {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Specific styling for payment records table */
+#paymentRecordsTable td:nth-child(2) { /* User ID */
+  word-break: break-all;
+  min-width: 150px;
+}
+
+#paymentRecordsTable td:nth-child(4) { /* Bank Details */
+  white-space: pre-wrap; /* Preserve newlines and wrap text */
+  min-width: 200px;
+}
+
+/* Buttons */
+button {
+  padding: 10px 15px;
+  background-color: #0a66c2;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #004182;
+}
+
+/* Back and Download CSV Buttons */
+#backButton,
+#downloadCsvButton {
+  display: block;
+  width: 200px;
+  margin: 20px auto;
+  padding: 12px;
+  text-align: center;
+  background-color: #0a66c2;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#backButton:hover,
+#downloadCsvButton:hover {
+  background-color: #004182;
+}
+
+/* Logout Button */
+#logoutButton {
+  display: block;
+  width: 200px;
+  margin: 20px auto;
+  padding: 12px;
+  text-align: center;
+  background-color: #e60023;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#logoutButton:hover {
+  background-color: #b8001b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  th, td {
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  #paymentRecordsTable td:nth-child(2),
+  #paymentRecordsTable td:nth-child(4) {
+    min-width: 100px;
+  }
+
+  #backButton,
+  #downloadCsvButton,
+  #logoutButton {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+  }
+
+  th, td {
+    font-size: 10px;
+  }
+
+  button {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  #paymentRecordsTable td:nth-child(2),
+  #paymentRecordsTable td:nth-child(4) {
+    min-width: 80px;
+  }
+
+  #backButton,
+  #downloadCsvButton,
+  #logoutButton {
+    width: 120px;
+  }
+}

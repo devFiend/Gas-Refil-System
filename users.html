@@ -77,120 +77,122 @@
 
   <style>
     /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f4f9;
-      color: #333;
-      padding: 20px;
-    }
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  padding: 20px;
+}
 
-    h1 {
-      text-align: center;
-      color: #4CAF50;
-      margin-bottom: 20px;
-    }
+h1 {
+  text-align: center;
+  color: #0a66c2;
+  margin-bottom: 20px;
+}
 
-    /* Table Container */
-    .table-container {
-      margin: 20px auto;
-      width: 100%;
-      max-width: 1000px;
-      overflow-x: auto;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 10px;
-    }
+/* Table Container */
+.table-container {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 1000px;
+  overflow-x: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    thead {
-      background-color: #4CAF50;
-      color: #fff;
-    }
+thead {
+  background-color: #0a66c2;
+  color: #ffffff;
+}
 
-    th, td {
-      text-align: left;
-      padding: 12px;
-      border: 1px solid #ddd;
-    }
+th, td {
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid #e1e4e8;
+}
 
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
 
-    tr:hover {
-      background-color: #f1f1f1;
-    }
+tr:hover {
+  background-color: #f0f8ff;
+}
 
-    th {
-      font-size: 16px;
-      font-weight: bold;
-    }
+th {
+  font-size: 15px;
+  font-weight: 600;
+}
 
-    td {
-      font-size: 14px;
-      color: #333;
-    }
+td {
+  font-size: 14px;
+  color: #333;
+}
 
-    /* Buttons */
-    button {
-      padding: 10px 15px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+/* Buttons */
+button {
+  padding: 10px 16px;
+  background-color: #0a66c2;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-    button:hover {
-      background-color: #45a049;
-    }
+button:hover {
+  background-color: #004182;
+}
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
 
-      h1 {
-        font-size: 20px;
-      }
+  h1 {
+    font-size: 20px;
+  }
 
-      th, td {
-        font-size: 12px;
-      }
+  th, td {
+    font-size: 12px;
+  }
 
-      button {
-        font-size: 12px;
-        padding: 8px 10px;
-      }
-    }
+  button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
 
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 18px;
-      }
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+  }
 
-      th, td {
-        font-size: 10px;
-      }
+  th, td {
+    font-size: 11px;
+  }
 
-      button {
-        font-size: 10px;
-        padding: 6px 8px;
-      }
-    }
+  button {
+    font-size: 11px;
+    padding: 7px 10px;
+  }
+}
+
   </style>
 </head>
 <body>

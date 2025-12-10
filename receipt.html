@@ -7,42 +7,49 @@
     <link rel="stylesheet" href="receipt.css">
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="receipt-container">
-        <h1>Payment Receipt</h1>
+        <h1><i class="fas fa-check-circle"></i> Payment Receipt</h1>
         <p id="receiptDate"></p>
         <table>
             <tr>
-                <th>Order ID</th>
-                <td id="receiptOrderId">N/A</td>
-            </tr>
-            <tr>
-                <th>Order Date</th>
-                <td id="receiptOrderDate">N/A</td>
-            </tr>
-            <tr>
-                <th>Gas Type</th>
-                <td id="receiptGasType">N/A</td>
-            </tr>
-            <tr>
-                <th>Quantity (kg)</th>
-                <td id="receiptQuantity">N/A</td>
-            </tr>
-            <tr>
-                <th>Total Price</th>
-                <td id="receiptTotalPrice">₦0</td>
-            </tr>
-            <tr>
-                <th>Delivery Address</th>
-                <td id="receiptAddress">N/A</td>
-            </tr>
+  <th><i class="fas fa-receipt"></i> Order ID</th>
+  <td id="receiptOrderId">N/A</td>
+</tr>
+<tr>
+  <th><i class="fas fa-calendar-alt"></i> Order Date</th>
+  <td id="receiptOrderDate">N/A</td>
+</tr>
+<tr>
+  <th><i class="fas fa-gas-pump"></i> Gas Type</th>
+  <td id="receiptGasType">N/A</td>
+</tr>
+<tr>
+  <th><i class="fas fa-balance-scale"></i> Quantity (kg)</th>
+  <td id="receiptQuantity">N/A</td>
+</tr>
+<tr>
+  <th><i class="fas fa-money-bill-wave"></i> Total Price</th>
+  <td id="receiptTotalPrice">₦0</td>
+</tr>
+<tr>
+  <th><i class="fas fa-map-marker-alt"></i> Delivery Address</th>
+  <td id="receiptAddress">N/A</td>
+</tr>
+
         </table>
         <div class="buttons">
-            <button onclick="printReceipt()">Print Receipt</button>
-            <button onclick="downloadReceipt()">Download as PDF</button>
-        </div>
+  <button onclick="printReceipt()">
+    <i class="fas fa-print"></i> Print Receipt
+  </button>
+  <button onclick="downloadReceipt()">
+    <i class="fas fa-file-download"></i> Download as PDF
+  </button>
+</div>
+
     </div>
 
     <script type="module">
